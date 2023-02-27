@@ -10,5 +10,7 @@ RUN CGO_ENABLED=0 go build -o /out/app ./cmd/app/main.go
 
 FROM scratch
 
+WORKDIR /out
 COPY --from=base /out/app /out/app
-ENTRYPOINT ["/out/app"]
+COPY config/docker.config.yaml /out/config/config.yaml
+ENTRYPOINT ["./app"]
