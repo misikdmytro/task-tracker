@@ -15,11 +15,7 @@ type Config struct {
 	Database DatabseConfig `yaml:"database"`
 }
 
-func NewConfig() (*Config, error) {
-	return NewConfigFromPath("./config/config.yaml")
-}
-
-func NewConfigFromPath(in string) (*Config, error) {
+func NewConfig(in string) (*Config, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(in)

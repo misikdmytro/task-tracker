@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/misikdmytro/task-tracker/internal/config"
 	"github.com/misikdmytro/task-tracker/internal/database"
 	"github.com/misikdmytro/task-tracker/internal/model"
 	"github.com/stretchr/testify/assert"
@@ -14,9 +13,7 @@ import (
 )
 
 func TestCreateList(t *testing.T) {
-	c, err := config.NewConfigFromPath("../../../config/config.yaml")
-	require.NoError(t, err)
-
+	c := RequireConfig(t)
 	f := database.NewConnectionFactory(c.Database)
 	r := database.NewRepository(f)
 
@@ -26,7 +23,7 @@ func TestCreateList(t *testing.T) {
 
 	assert.Greater(t, id, 0)
 
-	db, err := f.NewConnection()
+	db, err := f.NewDB()
 	require.NoError(t, err)
 	defer db.Close()
 
@@ -36,12 +33,10 @@ func TestCreateList(t *testing.T) {
 }
 
 func TestGetListNoList(t *testing.T) {
-	c, err := config.NewConfigFromPath("../../../config/config.yaml")
-	require.NoError(t, err)
-
+	c := RequireConfig(t)
 	f := database.NewConnectionFactory(c.Database)
 
-	db, err := f.NewConnection()
+	db, err := f.NewDB()
 	require.NoError(t, err)
 	defer db.Close()
 
@@ -56,12 +51,10 @@ func TestGetListNoList(t *testing.T) {
 }
 
 func TestGetListEmptyList(t *testing.T) {
-	c, err := config.NewConfigFromPath("../../../config/config.yaml")
-	require.NoError(t, err)
-
+	c := RequireConfig(t)
 	f := database.NewConnectionFactory(c.Database)
 
-	db, err := f.NewConnection()
+	db, err := f.NewDB()
 	require.NoError(t, err)
 	defer db.Close()
 
@@ -80,12 +73,10 @@ func TestGetListEmptyList(t *testing.T) {
 }
 
 func TestGetList(t *testing.T) {
-	c, err := config.NewConfigFromPath("../../../config/config.yaml")
-	require.NoError(t, err)
-
+	c := RequireConfig(t)
 	f := database.NewConnectionFactory(c.Database)
 
-	db, err := f.NewConnection()
+	db, err := f.NewDB()
 	require.NoError(t, err)
 	defer db.Close()
 

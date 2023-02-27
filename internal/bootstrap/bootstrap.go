@@ -18,7 +18,7 @@ type Server struct {
 }
 
 func NewServer(in string) (*Server, error) {
-	c, err := config.NewConfigFromPath(in)
+	c, err := config.NewConfig(in)
 	if err != nil {
 		return nil, err
 	}

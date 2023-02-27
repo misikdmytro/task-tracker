@@ -30,7 +30,7 @@ func (r *repository) GetTaskList(ctx context.Context, listID int) ([]model.TaskL
 		LEFT JOIN tbl_tasks AS t ON t.list_id = l.id
 		WHERE l.id = $1`
 
-	db, err := r.f.NewConnection()
+	db, err := r.f.NewDB()
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (r *repository) GetTaskList(ctx context.Context, listID int) ([]model.TaskL
 func (r *repository) CreateList(ctx context.Context, name string) (int, error) {
 	const query = `INSERT INTO tbl_lists (name) VALUES ($1) RETURNING id`
 
-	db, err := r.f.NewConnection()
+	db, err := r.f.NewDB()
 	if err != nil {
 		return 0, err
 	}

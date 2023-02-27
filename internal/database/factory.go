@@ -9,7 +9,7 @@ import (
 )
 
 type ConnectionFactory interface {
-	NewConnection() (*sqlx.DB, error)
+	NewDB() (*sqlx.DB, error)
 }
 
 type connectionFactory struct {
@@ -20,7 +20,7 @@ func NewConnectionFactory(c config.DatabseConfig) ConnectionFactory {
 	return &connectionFactory{config: c}
 }
 
-func (f *connectionFactory) NewConnection() (*sqlx.DB, error) {
+func (f *connectionFactory) NewDB() (*sqlx.DB, error) {
 	dataSourceName := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		f.config.Host,

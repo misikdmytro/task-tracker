@@ -9,17 +9,15 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/misikdmytro/task-tracker/internal/bootstrap"
 	"github.com/misikdmytro/task-tracker/internal/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGetListOK(t *testing.T) {
-	s, err := bootstrap.NewServer("../../config/config.yaml")
-	require.NoError(t, err)
-	defer s.Close()
-	go s.ListenAndServe()
+	s, start, close := Setup(t)
+	defer close()
+	start()
 
 	name := uuid.NewString()
 	id, err := s.R.CreateList(context.Background(), name)
@@ -45,12 +43,11 @@ func TestGetListOK(t *testing.T) {
 }
 
 func TestGetListNotFound(t *testing.T) {
-	s, err := bootstrap.NewServer("../../config/config.yaml")
-	require.NoError(t, err)
-	defer s.Close()
-	go s.ListenAndServe()
+	s, start, close := Setup(t)
+	defer close()
+	start()
 
-	db, err := s.F.NewConnection()
+	db, err := s.F.NewDB()
 	require.NoError(t, err)
 	defer db.Close()
 
@@ -76,10 +73,9 @@ func TestGetListNotFound(t *testing.T) {
 }
 
 func TestCreateList(t *testing.T) {
-	s, err := bootstrap.NewServer("../../config/config.yaml")
-	require.NoError(t, err)
-	defer s.Close()
-	go s.ListenAndServe()
+	s, start, close := Setup(t)
+	defer close()
+	start()
 
 	m := model.CreateListRequest{
 		Name: uuid.NewString(),
@@ -105,7 +101,7 @@ func TestCreateList(t *testing.T) {
 
 	assert.Greater(t, result.ID, 0)
 
-	db, err := s.F.NewConnection()
+	db, err := s.F.NewDB()
 	require.NoError(t, err)
 	defer db.Close()
 
