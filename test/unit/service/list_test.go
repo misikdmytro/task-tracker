@@ -17,7 +17,6 @@ type repositoryMock struct {
 	mock.Mock
 }
 
-// Ping implements database.Repository
 func (r *repositoryMock) Ping(ctx context.Context) error {
 	args := r.Called(ctx)
 	return args.Error(0)

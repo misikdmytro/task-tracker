@@ -21,6 +21,15 @@ type client struct {
 	baseAddress string
 }
 
+type APIError struct {
+	Message string
+	Code    int
+}
+
+func (e *APIError) Error() string {
+	return fmt.Sprintf("unexpected status code: %d. details: %s", e.Code, e.Message)
+}
+
 func NewClient(baseAddress string) Client {
 	return &client{baseAddress: baseAddress}
 }
@@ -37,7 +46,15 @@ func (c *client) CloseTask(taskID int) error {
 	}
 
 	if response.StatusCode != http.StatusNoContent {
-		return fmt.Errorf("unexpected status code: %d", response.StatusCode)
+		var result model.ErrorResponse
+		if err := json.NewDecoder(response.Body).Decode(&result); err != nil {
+			return err
+		}
+
+		return &APIError{
+			Message: result.Error,
+			Code:    response.StatusCode,
+		}
 	}
 
 	return nil
@@ -64,7 +81,15 @@ func (c *client) CreateList(name string) (model.CreateListResponse, error) {
 	}
 
 	if response.StatusCode != http.StatusCreated {
-		return model.CreateListResponse{}, fmt.Errorf("unexpected status code: %d", response.StatusCode)
+		var result model.ErrorResponse
+		if err := json.NewDecoder(response.Body).Decode(&result); err != nil {
+			return model.CreateListResponse{}, err
+		}
+
+		return model.CreateListResponse{}, &APIError{
+			Message: result.Error,
+			Code:    response.StatusCode,
+		}
 	}
 
 	var result model.CreateListResponse
@@ -96,7 +121,15 @@ func (c *client) CreateTask(listID int, name string) (model.AddTaskResponse, err
 	}
 
 	if response.StatusCode != http.StatusCreated {
-		return model.AddTaskResponse{}, fmt.Errorf("unexpected status code: %d", response.StatusCode)
+		var result model.ErrorResponse
+		if err := json.NewDecoder(response.Body).Decode(&result); err != nil {
+			return model.AddTaskResponse{}, err
+		}
+
+		return model.AddTaskResponse{}, &APIError{
+			Message: result.Error,
+			Code:    response.StatusCode,
+		}
 	}
 
 	var result model.AddTaskResponse
@@ -119,7 +152,15 @@ func (c *client) GetListByID(taskID int) (model.GetListByIDResponse, error) {
 	}
 
 	if response.StatusCode != http.StatusOK {
-		return model.GetListByIDResponse{}, fmt.Errorf("unexpected status code: %d", response.StatusCode)
+		var result model.ErrorResponse
+		if err := json.NewDecoder(response.Body).Decode(&result); err != nil {
+			return model.GetListByIDResponse{}, err
+		}
+
+		return model.GetListByIDResponse{}, &APIError{
+			Message: result.Error,
+			Code:    response.StatusCode,
+		}
 	}
 
 	var result model.GetListByIDResponse

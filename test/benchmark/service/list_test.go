@@ -88,6 +88,6 @@ func BenchmarkGetTaskList(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, _ = s.GetTaskList(context.Background(), 1)
+		s.GetTaskList(context.Background(), 1)
 	}
 }

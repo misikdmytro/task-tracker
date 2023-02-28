@@ -46,5 +46,8 @@ func TestGetListNotFound(t *testing.T) {
 	c := NewClient(BaseAddr)
 
 	_, err := c.GetListByID(-1)
-	assert.Error(t, err, "404 Not Found")
+	apiErr, ok := err.(*APIError)
+	require.True(t, ok)
+	assert.Equal(t, 404, apiErr.Code)
+	assert.Equal(t, "list not found", apiErr.Message)
 }
