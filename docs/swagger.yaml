@@ -34,14 +34,14 @@ definitions:
   model.GetListByIDResponse:
     properties:
       list:
-        $ref: '#/definitions/model.List'
+        $ref: '#/definitions/pkg_model.List'
     type: object
   model.HealthResponse:
     properties:
       status:
         type: string
     type: object
-  model.List:
+  pkg_model.List:
     properties:
       created_at:
         type: string
@@ -51,10 +51,10 @@ definitions:
         type: string
       tasks:
         items:
-          $ref: '#/definitions/model.Task'
+          $ref: '#/definitions/pkg_model.Task'
         type: array
     type: object
-  model.Task:
+  pkg_model.Task:
     properties:
       created_at:
         type: string
@@ -63,7 +63,6 @@ definitions:
       name:
         type: string
     type: object
-host: localhost:4000
 info:
   contact:
     name: Misik Dmytro

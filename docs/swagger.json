@@ -9,7 +9,6 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:4000",
     "basePath": "/",
     "paths": {
         "/health": {
@@ -291,7 +290,7 @@
             "type": "object",
             "properties": {
                 "list": {
-                    "$ref": "#/definitions/model.List"
+                    "$ref": "#/definitions/pkg_model.List"
                 }
             }
         },
@@ -303,7 +302,7 @@
                 }
             }
         },
-        "model.List": {
+        "pkg_model.List": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -318,12 +317,12 @@
                 "tasks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.Task"
+                        "$ref": "#/definitions/pkg_model.Task"
                     }
                 }
             }
         },
-        "model.Task": {
+        "pkg_model.Task": {
             "type": "object",
             "properties": {
                 "created_at": {

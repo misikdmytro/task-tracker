@@ -297,7 +297,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "list": {
-                    "$ref": "#/definitions/model.List"
+                    "$ref": "#/definitions/pkg_model.List"
                 }
             }
         },
@@ -309,7 +309,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.List": {
+        "pkg_model.List": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -324,12 +324,12 @@ const docTemplate = `{
                 "tasks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.Task"
+                        "$ref": "#/definitions/pkg_model.Task"
                     }
                 }
             }
         },
-        "model.Task": {
+        "pkg_model.Task": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -349,7 +349,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:4000",
+	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Task Tracker API",
