@@ -18,6 +18,7 @@ type ListService interface {
 	CreateList(ctx context.Context, name string) (int, error)
 	GetTaskList(ctx context.Context, listID int) (model.List, error)
 	AddTask(ctx context.Context, listID int, name string) (int, error)
+	CloseTask(ctx context.Context, taskID int) error
 }
 
 type listService struct {
@@ -73,4 +74,8 @@ func (l *listService) AddTask(ctx context.Context, listID int, name string) (int
 	}
 
 	return taskID, nil
+}
+
+func (l *listService) CloseTask(ctx context.Context, taskID int) error {
+	return l.r.DeleteTask(ctx, taskID)
 }

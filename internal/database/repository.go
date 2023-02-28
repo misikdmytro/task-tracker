@@ -16,6 +16,7 @@ type Repository interface {
 	GetTaskList(ctx context.Context, listID int) ([]model.TaskListDto, error)
 	CreateList(ctx context.Context, name string) (int, error)
 	CreateTask(ctx context.Context, listID int, name string) (int, error)
+	DeleteTask(ctx context.Context, taskID int) error
 }
 
 type repository struct {
@@ -87,4 +88,20 @@ func (r *repository) CreateTask(ctx context.Context, listID int, name string) (i
 	}
 
 	return id, nil
+}
+
+func (r *repository) DeleteTask(ctx context.Context, taskID int) error {
+	const query = `DELETE FROM tbl_tasks WHERE id = $1`
+
+	db, err := r.f.NewDB()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	if _, err := db.ExecContext(ctx, query, taskID); err != nil {
+		return err
+	}
+
+	return nil
 }

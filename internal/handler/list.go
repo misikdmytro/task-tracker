@@ -14,6 +14,7 @@ type ListHandler interface {
 	CreateList(ctx *gin.Context)
 	GetListByID(ctx *gin.Context)
 	AddTask(ctx *gin.Context)
+	CloseTask(ctx *gin.Context)
 }
 
 type listHandler struct {
@@ -126,4 +127,33 @@ func (h *listHandler) AddTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, model.AddTaskResponse{
 		ID: id,
 	})
+}
+
+func (h *listHandler) CloseTask(ctx *gin.Context) {
+	taskIDParam := ctx.Param("id")
+	if taskIDParam == "" {
+		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Error: "id is required",
+		})
+		return
+	}
+
+	taskID, err := strconv.Atoi(taskIDParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Error: "invalid id",
+		})
+		return
+	}
+
+	err = h.s.CloseTask(ctx, taskID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Error: "internal server error",
+		})
+
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
 }

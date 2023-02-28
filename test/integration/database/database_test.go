@@ -146,3 +146,29 @@ func TestCreateTaskNoList(t *testing.T) {
 	require.Error(t, err)
 	assert.Equal(t, id, 0)
 }
+
+func TestDeleteTask(t *testing.T) {
+	c := RequireConfig(t)
+	f := database.NewConnectionFactory(c.Database)
+
+	db, err := f.NewDB()
+	require.NoError(t, err)
+	defer db.Close()
+
+	listName := uuid.NewString()
+	var listID int
+	require.NoError(t, db.Get(&listID, "INSERT INTO tbl_lists (name) VALUES ($1) RETURNING id", listName))
+
+	name := uuid.NewString()
+	var id int
+	require.NoError(t, db.Get(&id, "INSERT INTO tbl_tasks (name, list_id) VALUES ($1, $2) RETURNING id", name, listID))
+
+	r := database.NewRepository(f)
+
+	err = r.DeleteTask(context.Background(), id)
+	require.NoError(t, err)
+
+	var result int
+	require.NoError(t, db.Get(&result, "SELECT COUNT(*) FROM tbl_tasks WHERE id = $1", id))
+	assert.Equal(t, 0, result)
+}

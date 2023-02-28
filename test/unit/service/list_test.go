@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -14,6 +15,16 @@ import (
 
 type repositoryMock struct {
 	mock.Mock
+}
+
+func (r *repositoryMock) DeleteTask(ctx context.Context, taskID int) error {
+	args := r.Called(ctx, taskID)
+	return args.Error(0)
+}
+
+func (r *repositoryMock) CreateTask(ctx context.Context, listID int, name string) (int, error) {
+	args := r.Called(ctx, listID, name)
+	return args.Int(0), args.Error(1)
 }
 
 func (r *repositoryMock) CreateList(ctx context.Context, name string) (int, error) {
@@ -112,6 +123,13 @@ func TestGetTaskList(t *testing.T) {
 			model.List{},
 			service.ErrListNotFound,
 		},
+		{
+			"unknown error",
+			nil,
+			fmt.Errorf("unknown error"),
+			model.List{},
+			fmt.Errorf("unknown error"),
+		},
 	}
 
 	for _, tc := range input {
@@ -139,4 +157,82 @@ func TestCreateList(t *testing.T) {
 
 	r.AssertCalled(t, "CreateList", mock.Anything, "list1")
 	r.AssertNumberOfCalls(t, "CreateList", 1)
+}
+
+func TestAddTask(t *testing.T) {
+	input := []struct {
+		name          string
+		dbResult      int
+		dbError       error
+		expected      int
+		expectedError error
+	}{
+		{
+			"success",
+			1,
+			nil,
+			1,
+			nil,
+		},
+		{
+			"list not found error",
+			0,
+			database.ErrListForeignKeyViolation,
+			0,
+			service.ErrListNotFound,
+		},
+		{
+			"unknown error",
+			0,
+			fmt.Errorf("unknown error"),
+			0,
+			fmt.Errorf("unknown error"),
+		},
+	}
+
+	for _, tc := range input {
+		t.Run(tc.name, func(t *testing.T) {
+			r := &repositoryMock{}
+			s := service.NewListService(r)
+
+			r.On("CreateTask", mock.Anything, 1, "task1").Return(tc.dbResult, tc.dbError)
+
+			res, err := s.AddTask(context.Background(), 1, "task1")
+
+			assert.Equal(t, tc.expected, res)
+			assert.Equal(t, tc.expectedError, err)
+		})
+	}
+}
+
+func TestCloseTask(t *testing.T) {
+	input := []struct {
+		name          string
+		dbError       error
+		expectedError error
+	}{
+		{
+			"success",
+			nil,
+			nil,
+		},
+		{
+			"unknown error",
+			fmt.Errorf("unknown error"),
+			fmt.Errorf("unknown error"),
+		},
+	}
+
+	for _, tc := range input {
+		t.Run(tc.name, func(t *testing.T) {
+			r := &repositoryMock{}
+			s := service.NewListService(r)
+
+			r.On("DeleteTask", mock.Anything, 1).Return(tc.dbError)
+
+			err := s.CloseTask(context.Background(), 1)
+
+			assert.Equal(t, tc.expectedError, err)
+		})
+	}
 }
