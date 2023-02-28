@@ -24,8 +24,8 @@ jobs:
       - run: go install honnef.co/go/tools/cmd/staticcheck@latest
       - run: staticcheck ./...
       - run: go build ./cmd/app/main.go
-      - run: docker-compose build
-      - run: docker-compose up flyway -d
+      - run: docker compose build
+      - run: docker compose up flyway -d
       - run: go test -v ./test/...
-      - run: docker-compose down -v
+      - run: docker compose down -v
         if: always()
