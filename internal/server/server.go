@@ -7,19 +7,24 @@ import (
 	"github.com/misikdmytro/task-tracker/internal/handler"
 )
 
-func NewServer(h handler.ListHandler) *http.Server {
+func NewServer(l handler.ListHandler, h handler.HealthHandler) *http.Server {
 	r := gin.Default()
 
 	lists := r.Group("/lists")
 	{
-		lists.GET("/:id", h.GetListByID)
-		lists.PUT("", h.CreateList)
-		lists.PUT("/:id/tasks", h.AddTask)
+		lists.GET("/:id", l.GetListByID)
+		lists.PUT("", l.CreateList)
+		lists.PUT("/:id/tasks", l.AddTask)
 	}
 
 	tasks := r.Group("/tasks")
 	{
-		tasks.DELETE("/:id", h.CloseTask)
+		tasks.DELETE("/:id", l.CloseTask)
+	}
+
+	health := r.Group("/health")
+	{
+		health.GET("", h.HealthCheck)
 	}
 
 	return &http.Server{

@@ -12,9 +12,10 @@ import (
 
 type Server struct {
 	*http.Server
-	F database.ConnectionFactory
-	R database.Repository
-	S service.ListService
+	F  database.ConnectionFactory
+	R  database.Repository
+	LS service.ListService
+	HH service.HealthService
 }
 
 func NewServer(in string) (*Server, error) {
@@ -25,14 +26,17 @@ func NewServer(in string) (*Server, error) {
 
 	f := database.NewConnectionFactory(c.Database)
 	r := database.NewRepository(f)
-	s := service.NewListService(r)
-	h := handler.NewListHandler(s)
-	srvr := server.NewServer(h)
+	l := service.NewListService(r)
+	h := service.NewHealthService(r)
+	lh := handler.NewListHandler(l)
+	hh := handler.NewHealthHandler(h)
+	srvr := server.NewServer(lh, hh)
 
 	return &Server{
 		Server: srvr,
 		F:      f,
 		R:      r,
-		S:      s,
+		LS:     l,
+		HH:     h,
 	}, nil
 }

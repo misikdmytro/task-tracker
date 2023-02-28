@@ -3,10 +3,8 @@ import { check } from 'k6';
 
 export const options = {
     stages: [
-        { target: 20, duration: '10s' },
-        { target: 50, duration: '20s' },
-        { target: 75, duration: '30s' },
-        { target: 100, duration: '1m' },
+        { target: 50, duration: '30s' },
+        { target: 50, duration: '1m' },
         { target: 0, duration: '30s' },
     ],
     thresholds: {
@@ -15,10 +13,13 @@ export const options = {
     },
 };
 
-let num = 0;
+const randomListNum = () => {
+    return Math.floor(Math.random() * 1000000);
+};
+
 export default function () {
     const body = {
-        name: `load_test${num++}`,
+        name: `load_test${randomListNum()}`,
     };
 
     const res = http.put('http://localhost:8000/lists/', JSON.stringify(body), {

@@ -17,6 +17,7 @@ type Repository interface {
 	CreateList(ctx context.Context, name string) (int, error)
 	CreateTask(ctx context.Context, listID int, name string) (int, error)
 	DeleteTask(ctx context.Context, taskID int) error
+	Ping(ctx context.Context) error
 }
 
 type repository struct {
@@ -104,4 +105,14 @@ func (r *repository) DeleteTask(ctx context.Context, taskID int) error {
 	}
 
 	return nil
+}
+
+func (r *repository) Ping(ctx context.Context) error {
+	db, err := r.f.NewDB()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	return db.PingContext(ctx)
 }
