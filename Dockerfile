@@ -12,5 +12,5 @@ FROM scratch
 
 WORKDIR /out
 COPY --from=base /out/app /out/app
-COPY config/docker.config.yaml /out/config/config.yaml
+COPY config /out/config
 ENTRYPOINT ["./app"]

@@ -1,6 +1,11 @@
 package main
 
-import "github.com/misikdmytro/task-tracker/internal/bootstrap"
+import (
+	"fmt"
+	"os"
+
+	"github.com/misikdmytro/task-tracker/internal/bootstrap"
+)
 
 //	@title			Task Tracker API
 //	@version		1.0
@@ -9,7 +14,12 @@ import "github.com/misikdmytro/task-tracker/internal/bootstrap"
 //	@contact.url	https://github.com/misikdmytro
 //	@BasePath		/
 func main() {
-	s, err := bootstrap.NewServer("./config/config.yaml")
+	env := os.Getenv("ENV")
+	if env == "" {
+		env = "dev"
+	}
+
+	s, err := bootstrap.NewServer(fmt.Sprintf("./config/%s.config.yaml", env))
 	if err != nil {
 		panic(err)
 	}

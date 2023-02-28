@@ -37,6 +37,7 @@ services:
     restart: always
     environment:
       - GIN_MODE=release
+      - ENV=docker
     ports:
       - 8000:4000
     depends_on:

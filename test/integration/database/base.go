@@ -8,7 +8,7 @@ import (
 )
 
 func RequireConfig(t *testing.T) *config.Config {
-	c, err := config.NewConfig("../../../config/config.yaml")
+	c, err := config.NewConfig("../../../config/dev.config.yaml")
 	require.NoError(t, err)
 	return c
 }
