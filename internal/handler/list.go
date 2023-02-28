@@ -6,8 +6,10 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/misikdmytro/task-tracker/internal/model"
+	inmodel "github.com/misikdmytro/task-tracker/internal/model"
 	"github.com/misikdmytro/task-tracker/internal/service"
+	"github.com/misikdmytro/task-tracker/pkg/model"
+	"github.com/samber/lo"
 )
 
 type ListHandler interface {
@@ -105,7 +107,18 @@ func (h *listHandler) GetListByID(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, model.GetListByIDResponse{
-		List: result,
+		List: model.List{
+			ID:        result.ID,
+			Name:      result.Name,
+			CreatedAt: result.CreatedAt,
+			Tasks: lo.Map(result.Tasks, func(task inmodel.Task, index int) model.Task {
+				return model.Task{
+					ID:        task.ID,
+					Name:      task.Name,
+					CreatedAt: task.CreatedAt,
+				}
+			}),
+		},
 	})
 }
 

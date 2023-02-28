@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/misikdmytro/task-tracker/internal/model"
 	"github.com/misikdmytro/task-tracker/internal/service"
+	"github.com/misikdmytro/task-tracker/pkg/model"
 )
 
 type HealthHandler interface {
@@ -21,6 +21,7 @@ func NewHealthHandler(s service.HealthService) HealthHandler {
 }
 
 // HealthCheck godoc
+//
 //	@Summary		health check
 //	@Description	health check
 //	@Tags			health
