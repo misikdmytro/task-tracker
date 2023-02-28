@@ -12,10 +12,16 @@ services:
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   flyway:
     image: flyway/flyway:9
-    restart: always
+    restart: on-failure:3
     environment:
       - FLYWAY_URL=jdbc:postgresql://db:5432/db
       - FLYWAY_USER=user
@@ -44,7 +50,7 @@ services:
       - db
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
-      interval: 1m30s
+      interval: 30s
       timeout: 5s
       retries: 3
       start_period: 5s
