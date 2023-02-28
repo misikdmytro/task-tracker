@@ -102,3 +102,47 @@ func TestGetList(t *testing.T) {
 		{ListID: id, ListName: name, ListCreatedAt: createdAt, TaskID: &taskId, TaskName: &taskName, TaskCreatedAt: &taskCreatedAt},
 	}, result)
 }
+
+func TestCreateTask(t *testing.T) {
+	c := RequireConfig(t)
+	f := database.NewConnectionFactory(c.Database)
+
+	db, err := f.NewDB()
+	require.NoError(t, err)
+	defer db.Close()
+
+	listName := uuid.NewString()
+	var listID int
+	require.NoError(t, db.Get(&listID, "INSERT INTO tbl_lists (name) VALUES ($1) RETURNING id", listName))
+
+	r := database.NewRepository(f)
+
+	name := uuid.NewString()
+	id, err := r.CreateTask(context.Background(), listID, name)
+	require.NoError(t, err)
+
+	assert.Greater(t, id, 0)
+
+	var result string
+	require.NoError(t, db.Get(&result, "SELECT name FROM tbl_tasks WHERE id = $1", id))
+	assert.Equal(t, name, result)
+}
+
+func TestCreateTaskNoList(t *testing.T) {
+	c := RequireConfig(t)
+	f := database.NewConnectionFactory(c.Database)
+
+	db, err := f.NewDB()
+	require.NoError(t, err)
+	defer db.Close()
+
+	var listID int
+	require.NoError(t, db.Get(&listID, "SELECT MAX(id) + 1 FROM tbl_lists"))
+
+	r := database.NewRepository(f)
+
+	name := uuid.NewString()
+	id, err := r.CreateTask(context.Background(), listID, name)
+	require.Error(t, err)
+	assert.Equal(t, id, 0)
+}

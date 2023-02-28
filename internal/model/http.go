@@ -30,3 +30,11 @@ type CreateListResponse struct {
 type GetListByIDResponse struct {
 	List List `json:"list"`
 }
+
+type AddTaskRequest struct {
+	Name string `json:"name" binding:"required,max=255"`
+}
+
+type AddTaskResponse struct {
+	ID int `json:"id"`
+}

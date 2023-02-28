@@ -14,6 +14,7 @@ func NewServer(h handler.ListHandler) *http.Server {
 	{
 		lists.GET("/:id", h.GetListByID)
 		lists.PUT("", h.CreateList)
+		lists.PUT("/lists/:id/tasks", h.AddTask)
 	}
 
 	return &http.Server{

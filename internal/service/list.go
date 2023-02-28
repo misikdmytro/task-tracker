@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/misikdmytro/task-tracker/internal/database"
@@ -16,6 +17,7 @@ var (
 type ListService interface {
 	CreateList(ctx context.Context, name string) (int, error)
 	GetTaskList(ctx context.Context, listID int) (model.List, error)
+	AddTask(ctx context.Context, listID int, name string) (int, error)
 }
 
 type listService struct {
@@ -58,4 +60,17 @@ func (l *listService) GetTaskList(ctx context.Context, listID int) (model.List, 
 	}
 
 	return list, nil
+}
+
+func (l *listService) AddTask(ctx context.Context, listID int, name string) (int, error) {
+	taskID, err := l.r.CreateTask(ctx, listID, name)
+	if err != nil {
+		if errors.Is(err, database.ErrListForeignKeyViolation) {
+			return 0, ErrListNotFound
+		}
+
+		return 0, err
+	}
+
+	return taskID, nil
 }

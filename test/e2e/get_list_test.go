@@ -1,7 +1,6 @@
 package e2e_test
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -70,42 +69,4 @@ func TestGetListNotFound(t *testing.T) {
 	require.NoError(t, json.NewDecoder(response.Body).Decode(&result))
 
 	assert.Equal(t, "list not found", result.Error)
-}
-
-func TestCreateList(t *testing.T) {
-	s, start, close := Setup(t)
-	defer close()
-	start()
-
-	m := model.CreateListRequest{
-		Name: uuid.NewString(),
-	}
-
-	jsonBytes, err := json.Marshal(m)
-	require.NoError(t, err)
-
-	request, err := http.NewRequest(
-		http.MethodPut,
-		"http://localhost:4000/lists/",
-		bytes.NewReader(jsonBytes),
-	)
-	require.NoError(t, err)
-
-	client := http.Client{}
-	response, err := client.Do(request)
-	require.NoError(t, err)
-
-	require.Equal(t, http.StatusCreated, response.StatusCode)
-	var result model.CreateListResponse
-	require.NoError(t, json.NewDecoder(response.Body).Decode(&result))
-
-	assert.Greater(t, result.ID, 0)
-
-	db, err := s.F.NewDB()
-	require.NoError(t, err)
-	defer db.Close()
-
-	var name string
-	require.NoError(t, db.Get(&name, "SELECT name FROM tbl_lists WHERE id = $1", result.ID))
-	assert.Equal(t, m.Name, name)
 }

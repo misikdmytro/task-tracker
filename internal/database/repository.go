@@ -2,13 +2,20 @@ package database
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/lib/pq"
 	"github.com/misikdmytro/task-tracker/internal/model"
+)
+
+var (
+	ErrListForeignKeyViolation = fmt.Errorf("list not found")
 )
 
 type Repository interface {
 	GetTaskList(ctx context.Context, listID int) ([]model.TaskListDto, error)
 	CreateList(ctx context.Context, name string) (int, error)
+	CreateTask(ctx context.Context, listID int, name string) (int, error)
 }
 
 type repository struct {
@@ -55,6 +62,27 @@ func (r *repository) CreateList(ctx context.Context, name string) (int, error) {
 
 	var id int
 	if err := db.GetContext(ctx, &id, query, name); err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
+
+func (r *repository) CreateTask(ctx context.Context, listID int, name string) (int, error) {
+	const query = `INSERT INTO tbl_tasks (list_id, name) VALUES ($1, $2) RETURNING id`
+
+	db, err := r.f.NewDB()
+	if err != nil {
+		return 0, err
+	}
+	defer db.Close()
+
+	var id int
+	if err := db.GetContext(ctx, &id, query, listID, name); err != nil {
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23503" {
+			return 0, ErrListForeignKeyViolation
+		}
+
 		return 0, err
 	}
 
