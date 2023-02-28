@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateTaskOK(t *testing.T) {
-	c := NewClient("http://localhost:8000")
+	c := NewClient(BaseAddr)
 
 	listResponse, err := c.CreateList(uuid.NewString())
 	require.NoError(t, err)
@@ -20,14 +20,14 @@ func TestCreateTaskOK(t *testing.T) {
 }
 
 func TestCreateTaskNoListNotFound(t *testing.T) {
-	c := NewClient("http://localhost:8000")
+	c := NewClient(BaseAddr)
 
 	_, err := c.CreateTask(-1, uuid.NewString())
 	assert.Error(t, err, "404 Not Found")
 }
 
 func TestCreateTaskLongNameBadRequest(t *testing.T) {
-	c := NewClient("http://localhost:8000")
+	c := NewClient(BaseAddr)
 
 	listResponse, err := c.CreateList(uuid.NewString())
 	require.NoError(t, err)

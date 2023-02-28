@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetListOK(t *testing.T) {
-	c := NewClient("http://localhost:8000")
+	c := NewClient(BaseAddr)
 
 	name := uuid.NewString()
 	listResponse, err := c.CreateList(name)
@@ -22,7 +22,7 @@ func TestGetListOK(t *testing.T) {
 }
 
 func TestGetListWithTasksOK(t *testing.T) {
-	c := NewClient("http://localhost:8000")
+	c := NewClient(BaseAddr)
 
 	listName := uuid.NewString()
 	listResponse, err := c.CreateList(listName)
@@ -43,7 +43,7 @@ func TestGetListWithTasksOK(t *testing.T) {
 }
 
 func TestGetListNotFound(t *testing.T) {
-	c := NewClient("http://localhost:8000")
+	c := NewClient(BaseAddr)
 
 	_, err := c.GetListByID(-1)
 	assert.Error(t, err, "404 Not Found")

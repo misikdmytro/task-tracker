@@ -8,7 +8,7 @@ import (
 )
 
 func TestCloseTaskNoContent(t *testing.T) {
-	c := NewClient("http://localhost:8000")
+	c := NewClient(BaseAddr)
 
 	listResponse, err := c.CreateList(uuid.NewString())
 	require.NoError(t, err)
@@ -21,7 +21,7 @@ func TestCloseTaskNoContent(t *testing.T) {
 }
 
 func TestCloseTaskNoTaskNoContent(t *testing.T) {
-	c := NewClient("http://localhost:8000")
+	c := NewClient(BaseAddr)
 
 	err := c.CloseTask(-1)
 	require.NoError(t, err)
