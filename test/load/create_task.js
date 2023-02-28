@@ -14,16 +14,19 @@ export const options = {
 };
 
 let minListID = 1;
-let maxListID = 40188;
+let maxListID = 51139;
 
 const randomListID = () => {
     return Math.floor(Math.random() * (maxListID - minListID + 1)) + minListID;
 };
 
-let num = 0;
+const randomTaskNum = () => {
+    return Math.floor(Math.random() * 1000000);
+};
+
 export default function () {
     const body = {
-        name: `load_test${num++}`,
+        name: `load_test${randomTaskNum()}`,
     };
 
     const res = http.put(`http://localhost:8000/lists/${randomListID()}/tasks`, JSON.stringify(body), {
