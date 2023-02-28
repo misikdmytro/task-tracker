@@ -39,20 +39,13 @@ func TestCloseTaskNoContent(t *testing.T) {
 }
 
 func TestCloseTaskNoTaskNoContent(t *testing.T) {
-	s, start, close := Setup(t)
+	_, start, close := Setup(t)
 	defer close()
 	start()
 
-	db, err := s.F.NewDB()
-	require.NoError(t, err)
-	defer db.Close()
-
-	var taskID int
-	require.NoError(t, db.Get(&taskID, "SELECT COALESCE(MAX(id), 0) + 1 FROM tbl_tasks"))
-
 	request, err := http.NewRequest(
 		http.MethodDelete,
-		fmt.Sprintf("http://localhost:4000/tasks/%d", taskID),
+		"http://localhost:4000/tasks/-1",
 		nil,
 	)
 	require.NoError(t, err)

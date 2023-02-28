@@ -85,20 +85,13 @@ func TestGetListWithTasksOK(t *testing.T) {
 }
 
 func TestGetListNotFound(t *testing.T) {
-	s, start, close := Setup(t)
+	_, start, close := Setup(t)
 	defer close()
 	start()
 
-	db, err := s.F.NewDB()
-	require.NoError(t, err)
-	defer db.Close()
-
-	var id int
-	require.NoError(t, db.Get(&id, "SELECT COALESCE(MAX(id), 0) + 1 FROM tbl_lists"))
-
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("http://localhost:4000/lists/%d", id),
+		"http://localhost:4000/lists/-1",
 		nil,
 	)
 	require.NoError(t, err)

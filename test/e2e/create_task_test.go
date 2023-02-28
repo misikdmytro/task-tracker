@@ -54,16 +54,9 @@ func TestCreateTaskOK(t *testing.T) {
 }
 
 func TestCreateTaskNoListNotFound(t *testing.T) {
-	s, start, close := Setup(t)
+	_, start, close := Setup(t)
 	defer close()
 	start()
-
-	db, err := s.F.NewDB()
-	require.NoError(t, err)
-	defer db.Close()
-
-	var listID int
-	require.NoError(t, db.Get(&listID, "SELECT COALESCE(MAX(id), 0) + 1 FROM tbl_lists"))
 
 	m := model.AddTaskRequest{
 		Name: uuid.NewString(),
@@ -74,7 +67,7 @@ func TestCreateTaskNoListNotFound(t *testing.T) {
 
 	request, err := http.NewRequest(
 		http.MethodPut,
-		"http://localhost:4000/lists/"+strconv.Itoa(listID)+"/tasks",
+		"http://localhost:4000/lists/-1/tasks",
 		bytes.NewReader(jsonBytes),
 	)
 	require.NoError(t, err)

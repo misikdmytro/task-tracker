@@ -36,15 +36,8 @@ func TestGetListNoList(t *testing.T) {
 	c := RequireConfig(t)
 	f := database.NewConnectionFactory(c.Database)
 
-	db, err := f.NewDB()
-	require.NoError(t, err)
-	defer db.Close()
-
-	var id int
-	require.NoError(t, db.Get(&id, "SELECT COALESCE(MAX(id), 0) + 1 FROM tbl_lists"))
-
 	r := database.NewRepository(f)
-	result, err := r.GetTaskList(context.Background(), id)
+	result, err := r.GetTaskList(context.Background(), -1)
 	require.NoError(t, err)
 
 	assert.Equal(t, []model.TaskListDto{}, result)
@@ -132,17 +125,10 @@ func TestCreateTaskNoList(t *testing.T) {
 	c := RequireConfig(t)
 	f := database.NewConnectionFactory(c.Database)
 
-	db, err := f.NewDB()
-	require.NoError(t, err)
-	defer db.Close()
-
-	var listID int
-	require.NoError(t, db.Get(&listID, "SELECT COALESCE(MAX(id), 0) + 1 FROM tbl_lists"))
-
 	r := database.NewRepository(f)
 
 	name := uuid.NewString()
-	id, err := r.CreateTask(context.Background(), listID, name)
+	id, err := r.CreateTask(context.Background(), -1, name)
 	require.Error(t, err)
 	assert.Equal(t, id, 0)
 }
