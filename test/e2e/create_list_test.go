@@ -13,9 +13,8 @@ import (
 )
 
 func TestCreateListOK(t *testing.T) {
-	s, start, close := Setup(t)
+	s, close := Setup(t)
 	defer close()
-	start()
 
 	m := model.CreateListRequest{
 		Name: uuid.NewString(),
@@ -51,9 +50,8 @@ func TestCreateListOK(t *testing.T) {
 }
 
 func TestCreateListLongNameBadRequest(t *testing.T) {
-	_, start, close := Setup(t)
+	_, close := Setup(t)
 	defer close()
-	start()
 
 	m := model.CreateListRequest{
 		Name: "SArUgjw0jT2Vpfik1ffidrsB0NopE4yplmv8YUIZmaoCPAQBViJzPmVIPVXcjuPkvIP0eB7TUE2L1uKevPAsou0zf6MMDAvZmtGKURxu9bAkbPxn399xa5heQBt11yk2F7RxVflxc6LvUR7CLZ9uGOkFtq6hgLIaaTCwvKmPt4mWKWQUaoTquMTPgzg4KtQT5HFlJndtHD9b7GCuY3WOzM9ErDFN320I72Hnq2iCj5IpuJOkuSBDUjGTSjSqNmRy1BSzbQkzTDVjYOmkfoNaKC8OSta7soPx87URGUSG5iANbyxDD2XcabEXCcETIHEMK7zAA39g0kBRuWpTfOyl67gbx4OMFvNfFo1aL2d6bAGueeDwN9ubQuHfgQEQeLtdlRtNHtgm7qYK0OKct3EsKPm51uVUfmdCzCSeOEGWBOEzXUZshBUXPS5AeGxLcpbpznhJqGrzNgM5",

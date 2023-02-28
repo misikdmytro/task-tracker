@@ -13,9 +13,8 @@ import (
 )
 
 func TestGetListOK(t *testing.T) {
-	s, start, close := Setup(t)
+	s, close := Setup(t)
 	defer close()
-	start()
 
 	db, err := s.F.NewDB()
 	require.NoError(t, err)
@@ -45,9 +44,8 @@ func TestGetListOK(t *testing.T) {
 }
 
 func TestGetListWithTasksOK(t *testing.T) {
-	s, start, close := Setup(t)
+	s, close := Setup(t)
 	defer close()
-	start()
 
 	db, err := s.F.NewDB()
 	require.NoError(t, err)
@@ -85,9 +83,8 @@ func TestGetListWithTasksOK(t *testing.T) {
 }
 
 func TestGetListNotFound(t *testing.T) {
-	_, start, close := Setup(t)
+	_, close := Setup(t)
 	defer close()
-	start()
 
 	request, err := http.NewRequest(
 		http.MethodGet,

@@ -7,12 +7,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Setup(t *testing.T) (*bootstrap.Server, func(), func()) {
+func Setup(t *testing.T) (*bootstrap.Server, func() error) {
 	s, err := bootstrap.NewServer("../../config/config.yaml")
 	require.NoError(t, err)
 
-	start := func() { go s.ListenAndServe() }
-	close := func() { s.Close() }
+	go s.ListenAndServe()
 
-	return s, start, close
+	return s, s.Close
 }

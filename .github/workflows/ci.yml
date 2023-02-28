@@ -26,6 +26,6 @@ jobs:
       - run: go build ./cmd/app/main.go
       - run: docker compose build
       - run: docker compose up -d flyway
-      - run: go test -p 1 -v ./test/...
+      - run: go test -v ./test/...
       - run: docker compose down -v
         if: always()

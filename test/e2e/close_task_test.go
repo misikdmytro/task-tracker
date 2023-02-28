@@ -10,9 +10,8 @@ import (
 )
 
 func TestCloseTaskNoContent(t *testing.T) {
-	s, start, close := Setup(t)
+	s, close := Setup(t)
 	defer close()
-	start()
 
 	db, err := s.F.NewDB()
 	require.NoError(t, err)
@@ -39,9 +38,8 @@ func TestCloseTaskNoContent(t *testing.T) {
 }
 
 func TestCloseTaskNoTaskNoContent(t *testing.T) {
-	_, start, close := Setup(t)
+	_, close := Setup(t)
 	defer close()
-	start()
 
 	request, err := http.NewRequest(
 		http.MethodDelete,

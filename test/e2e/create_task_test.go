@@ -14,9 +14,8 @@ import (
 )
 
 func TestCreateTaskOK(t *testing.T) {
-	s, start, close := Setup(t)
+	s, close := Setup(t)
 	defer close()
-	start()
 
 	db, err := s.F.NewDB()
 	require.NoError(t, err)
@@ -54,9 +53,8 @@ func TestCreateTaskOK(t *testing.T) {
 }
 
 func TestCreateTaskNoListNotFound(t *testing.T) {
-	_, start, close := Setup(t)
+	_, close := Setup(t)
 	defer close()
-	start()
 
 	m := model.AddTaskRequest{
 		Name: uuid.NewString(),
@@ -83,9 +81,8 @@ func TestCreateTaskNoListNotFound(t *testing.T) {
 }
 
 func TestCreateTaskLongNameBadRequest(t *testing.T) {
-	s, start, close := Setup(t)
+	s, close := Setup(t)
 	defer close()
-	start()
 
 	db, err := s.F.NewDB()
 	require.NoError(t, err)
