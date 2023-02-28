@@ -11,25 +11,27 @@ export const options = {
     ],
     thresholds: {
         http_req_failed: ['rate<0.01'],
-        http_req_duration: ['p(95)<300'],
+        http_req_duration: ['p(95)<400'],
     },
 };
 
-let num = 0;
-export default function () {
-    const body = {
-        name: `load_test${num++}`,
-    };
+let minListID = 1;
+let maxListID = 55651;
 
-    const res = http.put('http://localhost:8000/lists/', JSON.stringify(body), {
+const randomListID = () => {
+    return Math.floor(Math.random() * (maxListID - minListID + 1)) + minListID;
+};
+
+export default function () {
+    const res = http.get(`http://localhost:8000/lists/${randomListID()}`, null, {
         headers: { 'Content-Type': 'application/json' },
     });
 
     check(res, {
-        'status is 201': (r) => r.status === 201,
+        'status is 200': (r) => r.status === 200,
         'response body': (r) => {
             const body = JSON.parse(r.body);
-            return body.id > 0;
+            return body.list?.id > 0;
         },
     });
 }
