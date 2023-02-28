@@ -20,6 +20,15 @@ func NewHealthHandler(s service.HealthService) HealthHandler {
 	return &healthHandler{s: s}
 }
 
+// HealthCheck godoc
+//	@Summary		health check
+//	@Description	health check
+//	@Tags			health
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	model.HealthResponse
+//	@Failure		500	{object}	model.ErrorResponse
+//	@Router			/health [get]
 func (h *healthHandler) HealthCheck(ctx *gin.Context) {
 	if err := h.s.HealthCheck(ctx); err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ErrorResponse{

@@ -25,6 +25,18 @@ func NewListHandler(s service.ListService) ListHandler {
 	return &listHandler{s: s}
 }
 
+// CreateList godoc
+//
+//	@Summary		create list
+//	@Description	create list
+//	@Tags			lists
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		model.CreateListRequest	true	"request body"
+//	@Success		201		{object}	model.CreateListResponse
+//	@Failure		400		{object}	model.ErrorResponse
+//	@Failure		500		{object}	model.ErrorResponse
+//	@Router			/lists [put]
 func (h *listHandler) CreateList(ctx *gin.Context) {
 	var request model.CreateListRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -47,6 +59,19 @@ func (h *listHandler) CreateList(ctx *gin.Context) {
 	})
 }
 
+// GetListByID godoc
+//
+//	@Summary		get list by id
+//	@Description	get list by id
+//	@Tags			lists
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"list id"
+//	@Success		200	{object}	model.GetListByIDResponse
+//	@Failure		400	{object}	model.ErrorResponse
+//	@Failure		404	{object}	model.ErrorResponse
+//	@Failure		500	{object}	model.ErrorResponse
+//	@Router			/lists/{id} [get]
 func (h *listHandler) GetListByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
@@ -84,6 +109,20 @@ func (h *listHandler) GetListByID(ctx *gin.Context) {
 	})
 }
 
+// AddTask godoc
+//
+//	@Summary		add task to list
+//	@Description	add task to list
+//	@Tags			lists
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int						true	"list id"
+//	@Param			request	body		model.AddTaskRequest	true	"request body"
+//	@Success		201		{object}	model.AddTaskResponse
+//	@Failure		400		{object}	model.ErrorResponse
+//	@Failure		404		{object}	model.ErrorResponse
+//	@Failure		500		{object}	model.ErrorResponse
+//	@Router			/lists/{id}/tasks [put]
 func (h *listHandler) AddTask(ctx *gin.Context) {
 	var request model.AddTaskRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -129,6 +168,18 @@ func (h *listHandler) AddTask(ctx *gin.Context) {
 	})
 }
 
+// CloseTask godoc
+//
+//	@Summary		close task
+//	@Description	close task
+//	@Tags			lists
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"task id"
+//	@Success		204
+//	@Failure		400	{object}	model.ErrorResponse
+//	@Failure		500	{object}	model.ErrorResponse
+//	@Router			/tasks/{id} [delete]
 func (h *listHandler) CloseTask(ctx *gin.Context) {
 	taskIDParam := ctx.Param("id")
 	if taskIDParam == "" {
