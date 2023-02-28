@@ -48,7 +48,7 @@ func TestCloseTaskNoTaskNoContent(t *testing.T) {
 	defer db.Close()
 
 	var taskID int
-	require.NoError(t, db.Get(&taskID, "SELECT MAX(id) + 1 FROM tbl_tasks"))
+	require.NoError(t, db.Get(&taskID, "SELECT COALESCE(MAX(id), 0) + 1 FROM tbl_tasks"))
 
 	request, err := http.NewRequest(
 		http.MethodDelete,

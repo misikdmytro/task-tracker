@@ -94,7 +94,7 @@ func TestGetListNotFound(t *testing.T) {
 	defer db.Close()
 
 	var id int
-	require.NoError(t, db.Get(&id, "SELECT MAX(id) + 1 FROM tbl_lists"))
+	require.NoError(t, db.Get(&id, "SELECT COALESCE(MAX(id), 0) + 1 FROM tbl_lists"))
 
 	request, err := http.NewRequest(
 		http.MethodGet,

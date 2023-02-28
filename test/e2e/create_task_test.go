@@ -63,7 +63,7 @@ func TestCreateTaskNoListNotFound(t *testing.T) {
 	defer db.Close()
 
 	var listID int
-	require.NoError(t, db.Get(&listID, "SELECT MAX(id) + 1 FROM tbl_lists"))
+	require.NoError(t, db.Get(&listID, "SELECT COALESCE(MAX(id), 0) + 1 FROM tbl_lists"))
 
 	m := model.AddTaskRequest{
 		Name: uuid.NewString(),
